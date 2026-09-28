@@ -8,4 +8,18 @@ from prompt_engine.schema import PromptTemplate
 
 
 def test_valid_prompt_template():
-    d
+    data = {
+        "name": "test_prompt",
+        "description": "A test prompt template",
+        "input_variables": ["var1", "var2"],
+        "template": "Hello {{ var1 }}, welcome to {{ var2 }}!",
+    }
+    tmpl = PromptTemplate(**data)
+    assert tmpl.name == "test_prompt"
+    assert tmpl.description == "A test prompt template"
+    assert tmpl.input_variables == ["var1", "var2"]
+    assert tmpl.template == "Hello {{ var1 }}, welcome to {{ var2 }}!"
+
+
+def test_missing_required_fields():
+    # Mi
