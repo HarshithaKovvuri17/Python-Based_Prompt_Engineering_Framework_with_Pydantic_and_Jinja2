@@ -30,3 +30,18 @@ class PromptTemplate(BaseModel):
     )
     input_variables: List[str] = Field(
         default_factory=list,
+        description="Definitive list of variables required at render time",
+    )
+    template: str = Field(
+        ...,
+        description="The actual prompt template string using Jinja2 syntax",
+    )
+
+    def validate_inputs(self, provided_vars: dict) -> List[str]:
+        """
+        Check if all required input variables are present in provided_vars.
+        Returns a list of missing variable names.
+        """
+        provided_keys = set(provided_vars.keys())
+        missing = [var for var in self.input_variables if var not in provided_keys]
+        return missing
