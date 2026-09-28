@@ -22,4 +22,16 @@ def test_valid_prompt_template():
 
 
 def test_missing_required_fields():
-    # Mi
+    # Missing 'template'
+    data = {
+        "name": "invalid_prompt",
+        "description": "Missing template field",
+        "input_variables": ["var1"],
+    }
+    with pytest.raises(ValidationError):
+        PromptTemplate(**data)
+
+
+def test_validate_inputs_helper():
+    tmpl = PromptTemplate(
+        
