@@ -34,4 +34,15 @@ def test_missing_required_fields():
 
 def test_validate_inputs_helper():
     tmpl = PromptTemplate(
-        
+        name="test_helper",
+        description="Testing validate_inputs",
+        input_variables=["name", "age", "role"],
+        template="Hello {{ name }}",
+    )
+    missing = tmpl.validate_inputs({"name": "Alice"})
+    assert "age" in missing
+    assert "role" in missing
+    assert "name" not in missing
+
+    no_missing = tmpl.validate_inputs({"name": "Alice", "age": 30, "role": "Admin"})
+    assert len(no_missing) == 0
