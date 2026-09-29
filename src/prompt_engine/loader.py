@@ -24,4 +24,25 @@ class TemplateLoader:
     def __init__(self, directory: Optional[Union[str, Path]] = None):
         self.registry: Dict[str, PromptTemplate] = {}
         if directory:
-            self.load_directory(direct
+            self.load_directory(directory)
+
+    def load_file(self, file_path: Union[str, Path]) -> PromptTemplate:
+        """
+        Loads and validates a single template file (.yaml, .yml, or .json).
+        """
+        path = Path(file_path)
+        if not path.is_file():
+            raise TemplateLoadError(str(path), "File does not exist.")
+
+        ext = path.suffix.lower()
+        if ext not in (".yaml", ".yml", ".json"):
+            raise TemplateLoadError(str(path), f"Unsupported file extension '{ext}'.")
+
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                if ext in (".yaml", ".yml"):
+                    data = yaml.safe_load(f)
+                else:
+                    data = json.load(f)
+        except (yaml.YAMLError, json.JSONDecodeError, OSError) as e:
+            raise Templat
