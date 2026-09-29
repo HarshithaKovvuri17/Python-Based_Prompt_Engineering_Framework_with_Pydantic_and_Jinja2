@@ -45,4 +45,16 @@ class TemplateLoader:
                 else:
                     data = json.load(f)
         except (yaml.YAMLError, json.JSONDecodeError, OSError) as e:
-            raise Templat
+            raise TemplateLoadError(str(path), f"Syntax parsing error: {e}")
+
+        if not isinstance(data, dict):
+            raise TemplateLoadError(str(path), "Template file content must be a JSON/YAML object/dictionary.")
+
+        try:
+            template_model = PromptTemplate(**data)
+        except ValidationError as e:
+            raise TemplateLoadError(str(path), f"Schema validation error: {e}")
+
+        return template_model
+
+    def load_directory(self, directory_path: Union[str, Path]) -> Dict[str, Prompt
