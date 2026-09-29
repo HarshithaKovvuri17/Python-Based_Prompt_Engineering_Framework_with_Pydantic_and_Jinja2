@@ -81,4 +81,21 @@ class TemplateLoader:
                         f"Overwriting existing template '{template.name}' with file '{path}'"
                     )
                 self.registry[template.name] = template
-            except Templat
+            except TemplateLoadError as e:
+                logger.warning(f"Skipping invalid template file '{path}': {e.reason}")
+            except Exception as e:
+                logger.warning(f"Unexpected error loading '{path}': {e}")
+
+        return self.registry
+
+    def get(self, name: str) -> PromptTemplate:
+        """Retrieves a loaded template by its unique name."""
+        if name not in self.registry:
+            raise KeyError(f"Template '{name}' not found in loader registry. Available: {list(self.registry.keys())}")
+        return self.registry[name]
+
+    def __getitem__(self, name: str) -> PromptTemplate:
+        return self.get(name)
+
+    def __contains__(self, name: str) -> bool:
+        return name
