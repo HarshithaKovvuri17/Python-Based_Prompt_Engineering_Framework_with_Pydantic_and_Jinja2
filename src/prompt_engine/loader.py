@@ -98,4 +98,14 @@ class TemplateLoader:
         return self.get(name)
 
     def __contains__(self, name: str) -> bool:
-        return name
+        return name in self.registry
+
+    def list_templates(self) -> List[str]:
+        """Returns a list of all loaded template names."""
+        return list(self.registry.keys())
+
+
+def load_templates(directory_path: Union[str, Path]) -> Dict[str, PromptTemplate]:
+    """Helper function to load templates from a directory into a dictionary registry."""
+    loader = TemplateLoader(directory_path)
+    return loader.registry
