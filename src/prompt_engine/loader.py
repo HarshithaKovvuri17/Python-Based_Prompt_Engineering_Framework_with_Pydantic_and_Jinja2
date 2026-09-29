@@ -57,4 +57,28 @@ class TemplateLoader:
 
         return template_model
 
-    def load_directory(self, directory_path: Union[str, Path]) -> Dict[str, Prompt
+    def load_directory(self, directory_path: Union[str, Path]) -> Dict[str, PromptTemplate]:
+        """
+        Scans a directory for all .yaml, .yml, and .json files, validates each,
+        and adds valid templates to the registry. Logs warnings for invalid files
+        without crashing the loader.
+        """
+        dir_path = Path(directory_path)
+        if not dir_path.is_dir():
+            logger.warning(f"Directory path '{directory_path}' does not exist or is not a directory.")
+            return self.registry
+
+        for path in sorted(dir_path.rglob("*")):
+            if not path.is_file():
+                continue
+            if path.suffix.lower() not in (".yaml", ".yml", ".json"):
+                continue
+
+            try:
+                template = self.load_file(path)
+                if template.name in self.registry:
+                    logger.warning(
+                        f"Overwriting existing template '{template.name}' with file '{path}'"
+                    )
+                self.registry[template.name] = template
+            except Templat
