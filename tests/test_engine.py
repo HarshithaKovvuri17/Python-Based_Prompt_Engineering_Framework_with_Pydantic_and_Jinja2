@@ -38,3 +38,19 @@ def test_render_engine_missing_variable():
 
 
 def test_render_engine_jinja_loop_and_conditionals():
+    tmpl = PromptTemplate(
+        name="few_shot_test",
+        description="Loops over examples",
+        input_variables=["examples", "query"],
+        template=(
+            "{% for ex in examples %}"
+            "Q: {{ ex.q }} -> A: {{ ex.a }}\n"
+            "{% endfor %}"
+            "Q: {{ query }} -> A:"
+        ),
+    )
+    engine = RenderEngine()
+    examples = [{"q": "1+1", "a": "2"}, {"q": "2+2", "a": "4"}]
+    rendered = engine.render(tmpl, examples=examples, query="3+3")
+    assert "Q: 1+1 -> A: 2" in rendered
+    assert "Q: 3+3 -> A:" in rendered
