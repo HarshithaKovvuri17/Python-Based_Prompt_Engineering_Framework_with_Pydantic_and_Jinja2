@@ -18,4 +18,29 @@ class RenderEngine:
     def __init__(self, undefined_behavior=StrictUndefined):
         """
         Instantiates the Jinja2 Environment with StrictUndefined to ensure
-        unbound template variables trigg
+        unbound template variables trigger errors.
+        """
+        self.env = Environment(undefined=undefined_behavior)
+
+    def render(self, template: PromptTemplate, *args: Any, **kwargs: Any) -> str:
+        """
+        Renders a PromptTemplate instance with runtime arguments.
+
+        Args:
+            template: Validated PromptTemplate instance.
+            *args: Optional dictionary of runtime variables.
+            **kwargs: Key-value pairs matching input_variables.
+
+        Returns:
+            The fully rendered prompt string.
+
+        Raises:
+            MissingVariableError: If any variable in template.input_variables is missing.
+            PromptEngineError: If Jinja2 fails rendering due to undefined variables or syntax issues.
+        """
+        provided_vars = {}
+        if args and isinstance(args[0], dict):
+            provided_vars.update(args[0])
+        provided_vars.update(kwargs)
+
+        # Pre-fligh
