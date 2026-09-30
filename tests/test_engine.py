@@ -24,4 +24,17 @@ def test_render_engine_missing_variable():
     tmpl = PromptTemplate(
         name="user_profile",
         description="Displays profile",
-        input
+        input_variables=["username", "age"],
+        template="User {{ username }} is {{ age }} years old.",
+    )
+    engine = RenderEngine()
+    with pytest.raises(MissingVariableError) as exc_info:
+        engine.render(tmpl, username="Bob")
+
+    err = exc_info.value
+    assert err.template_name == "user_profile"
+    assert "age" in err.missing_variables
+    assert "Template 'user_profile' requires variable 'age' which was not provided." in str(err)
+
+
+def test_render_engine_jinja_loop_and_conditionals():
