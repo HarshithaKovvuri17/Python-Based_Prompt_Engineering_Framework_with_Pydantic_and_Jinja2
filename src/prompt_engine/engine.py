@@ -43,4 +43,26 @@ class RenderEngine:
             provided_vars.update(args[0])
         provided_vars.update(kwargs)
 
-        # Pre-fligh
+        # Pre-flight check: Verify all variables listed in template.input_variables are present
+        missing_vars = template.validate_inputs(provided_vars)
+        if missing_vars:
+            raise MissingVariableError(
+                template_name=template.name,
+                missing_variables=missing_vars,
+            )
+
+        try:
+            # Compile Jinja2 template string
+            jinja_template = self.env.from_string(template.template)
+            # Render with provided_vars
+            rendered_prompt = jinja_template.render(**provided_vars)
+            return rendered_prompt
+        except UndefinedError as e:
+            # Catch any Jinja undefined error if jinja template uses variables not listed in input_variables
+            raise PromptEngineError(
+                f"Jinja rendering error for template '{template.name}': {e}"
+            ) from e
+        except Exception as e:
+            raise PromptEngineError(
+                f"Unexpected rendering error for template '{template.name}': {e}"
+            ) from e
