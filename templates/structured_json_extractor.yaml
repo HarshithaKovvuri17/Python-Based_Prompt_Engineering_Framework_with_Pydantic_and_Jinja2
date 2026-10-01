@@ -1,0 +1,22 @@
+name: structured_json_extractor
+description: Extracts entity details from text into a strict JSON schema format.
+input_variables:
+  - unstructured_text
+  - required_fields
+template: |
+  Extract key entities from the input text below. You MUST return ONLY a valid JSON object matching the requested schema fields. Do not include markdown code blocks or conversational text.
+
+  Target JSON Schema Fields:
+  {% for field in required_fields %}
+    - {{ field }}
+  {% endfor %}
+
+  Unstructured Input Text:
+  {{ unstructured_text }}
+
+  JSON Output:
+  {
+  {% for field in required_fields %}
+    "{{ field }}": "<extracted_{{ field }}>"{% if not loop.last %},{% endif %}
+  {% endfor %}
+  }

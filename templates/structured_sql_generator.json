@@ -1,0 +1,6 @@
+{
+  "name": "structured_sql_generator",
+  "description": "Generates structured SQL queries alongside JSON metadata.",
+  "input_variables": ["table_schema", "user_query", "database_type"],
+  "template": "Generate an optimized {{ database_type }} SQL query based on the schema and question.\n\nTable Schema:\n{{ table_schema }}\n\nQuestion: {{ user_query }}\n\nSQL Query:"
+}
