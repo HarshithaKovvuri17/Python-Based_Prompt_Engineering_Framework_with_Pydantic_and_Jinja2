@@ -1,0 +1,12 @@
+name: zero_shot_summarizer
+description: Summarizes text directly without prior examples.
+input_variables:
+  - text_to_summarize
+  - max_words
+template: |
+  Please summarize the following text concisely in no more than {{ max_words }} words.
+
+  Text:
+  {{ text_to_summarize }}
+
+  Summary:
