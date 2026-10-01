@@ -1,0 +1,6 @@
+{
+  "name": "few_shot_classifier",
+  "description": "Categorizes support tickets using dynamic few-shot examples.",
+  "input_variables": ["examples", "ticket_text"],
+  "template": "Classify the support ticket into: Billing, Technical, Account, or Feature Request.\n\n{% for item in examples %}\nTicket: {{ item.ticket }}\nCategory: {{ item.category }}\n\n{% endfor %}\nTicket: {{ ticket_text }}\nCategory:\n"
+}
