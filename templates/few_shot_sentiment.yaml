@@ -1,0 +1,15 @@
+name: few_shot_sentiment
+description: Classifies sentiment using dynamic few-shot examples via Jinja iteration.
+input_variables:
+  - examples
+  - target_text
+template: |
+  Identify the sentiment (Positive, Negative, or Neutral) of the target text based on the provided examples.
+
+  {% for ex in examples %}
+  Text: {{ ex.text }}
+  Sentiment: {{ ex.sentiment }}
+
+  {% endfor %}
+  Text: {{ target_text }}
+  Sentiment:
