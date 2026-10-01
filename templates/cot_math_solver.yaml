@@ -1,0 +1,18 @@
+name: cot_math_solver
+description: Solves complex math word problems using step-by-step reasoning with structural tags.
+input_variables:
+  - problem_statement
+template: |
+  Solve the following math word problem. Let's think step by step before giving the final answer.
+
+  Problem:
+  {{ problem_statement }}
+
+  Structure your response using the following XML tags:
+  <reasoning>
+  Break down the problem, list known values, and show step-by-step calculation logic.
+  </reasoning>
+
+  <final_answer>
+  State the final numerical result cleanly.
+  </final_answer>
