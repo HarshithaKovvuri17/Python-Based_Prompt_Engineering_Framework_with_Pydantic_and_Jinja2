@@ -1,0 +1,6 @@
+{
+  "name": "cot_logic_puzzle",
+  "description": "Solves logical deduction puzzles using explicit chain of thought reasoning steps.",
+  "input_variables": ["puzzle_description"],
+  "template": "Read the logical deduction puzzle carefully and work through the clues step-by-step.\n\nPuzzle:\n{{ puzzle_description }}\n\nPlease reason step by step:\n1. Identify all entities and constraints.\n2. Eliminate impossible combinations.\n3. State the single logical conclusion."
+}
