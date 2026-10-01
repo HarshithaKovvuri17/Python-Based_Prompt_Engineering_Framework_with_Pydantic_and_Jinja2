@@ -1,0 +1,6 @@
+{
+  "name": "zero_shot_translator",
+  "description": "Translates text directly into a target language.",
+  "input_variables": ["source_language", "target_language", "text"],
+  "template": "Translate the following {{ source_language }} text into {{ target_language }}.\n\nText:\n{{ text }}\n\nTranslation:\n"
+}
