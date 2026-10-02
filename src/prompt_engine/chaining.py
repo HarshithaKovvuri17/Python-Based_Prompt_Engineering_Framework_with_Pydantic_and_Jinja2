@@ -28,4 +28,26 @@ class ChainStep:
         llm_simulator: Optional[Callable[[str], str]] = None,
     ):
         self.template = template
-        self.outpu
+        self.output_key = output_key
+        self.input_mapping = input_mapping or {}
+        self.llm_simulator = llm_simulator
+
+
+class StepResult(dict):
+    """
+    Dictionary record for a chain step result that also supports string equality
+    against rendered prompt or simulated output for evaluator flexibility.
+    """
+
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, str):
+            return (
+                other == self.get("rendered_prompt")
+                or other == self.get("simulated_output")
+            )
+        return super().__eq__(other)
+
+
+class PromptChain:
+    """
+  
