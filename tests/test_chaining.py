@@ -26,4 +26,24 @@ def test_prompt_chain_execution():
     engine = RenderEngine()
     chain = PromptChain(engine=engine)
 
-    def mock_llm(prompt: str) ->
+    def mock_llm(prompt: str) -> str:
+        if "Summarize" in prompt:
+            return "Summary result"
+        return "Action items result"
+
+    steps = [
+        ChainStep(template=tmpl1, output_key="summary"),
+        ChainStep(template=tmpl2, output_key="action_items"),
+    ]
+
+    initial_inputs = {"raw_text": "Detailed raw text content"}
+    results = chain.execute_chain(steps, initial_inputs, default_llm_simulator=mock_llm)
+
+    assert len(results) == 2
+    assert results[0]["template_name"] == "step1_summary"
+    assert results[0]["simulated_output"] == "Summary result"
+    assert results[1]["template_name"] == "step2_action"
+    assert results[1]["rendered_prompt"] == "Extract actions from summary: Summary result"
+    assert results[1]["simulated_output"] == "Action items result"
+    assert results[1]["state_after_step"]["summary"] == "Summary result"
+    assert results[1]["state_after_step"]["action_items"
