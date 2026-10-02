@@ -50,4 +50,27 @@ class StepResult(dict):
 
 class PromptChain:
     """
-  
+    Executes a sequence of prompt templates, carrying state forward from step to step.
+    """
+
+    def __init__(
+        self,
+        engine: Optional[RenderEngine] = None,
+        loader: Optional[TemplateLoader] = None,
+    ):
+        self.engine = engine or RenderEngine()
+        self.loader = loader
+
+    def _resolve_template(self, template_ref: Union[PromptTemplate, str]) -> PromptTemplate:
+        if isinstance(template_ref, PromptTemplate):
+            return template_ref
+        elif isinstance(template_ref, str):
+            if not self.loader:
+                raise ValueError(
+                    f"Cannot resolve template name '{template_ref}' because no TemplateLoader was provided to PromptChain."
+                )
+            return self.loader.get(template_ref)
+        else:
+            raise TypeError(f"Invalid template reference type: {type(template_ref)}")
+
+    def execut
