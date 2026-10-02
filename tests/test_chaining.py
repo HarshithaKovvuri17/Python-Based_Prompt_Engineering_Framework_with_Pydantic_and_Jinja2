@@ -46,4 +46,21 @@ def test_prompt_chain_execution():
     assert results[1]["rendered_prompt"] == "Extract actions from summary: Summary result"
     assert results[1]["simulated_output"] == "Action items result"
     assert results[1]["state_after_step"]["summary"] == "Summary result"
-    assert results[1]["state_after_step"]["action_items"
+    assert results[1]["state_after_step"]["action_items"] == "Action items result"
+
+
+def test_prompt_chain_with_loader_template_names(tmp_path):
+    t_file = tmp_path / "t1.yaml"
+    t_file.write_text(
+        'name: named_t1\ndescription: Test\ninput_variables: [in_var]\ntemplate: "Prompt: {{ in_var }}"\n'
+    )
+    loader = TemplateLoader(tmp_path)
+    chain = PromptChain(loader=loader)
+
+    results = chain.execute_chain(
+        steps=["named_t1"],
+        initial_inputs={"in_var": "Hello World"},
+    )
+    assert len(results) == 1
+    assert results[0]["template_name"] == "named_t1"
+    assert results[0]["rendered_prompt"] == "Prompt: Hello World"
