@@ -155,4 +155,37 @@ def main():
     initial_inputs = {
         "text_to_summarize": (
             "Decoupling text prompts from hardcoded Python source code is a fundamental requirement "
-            "for production generative AI systems. By utilizin
+            "for production generative AI systems. By utilizing configuration assets in YAML/JSON and "
+            "validating schemas with Pydantic, non-technical experts can safely tune prompts without code deployments."
+        ),
+        "max_words": 20,
+        "source_language": "English",
+        "target_language": "Spanish",
+    }
+
+    print("Executing 2-step prompt chain:")
+    chain_results = chain.execute_chain(
+        steps=chain_steps,
+        initial_inputs=initial_inputs,
+        default_llm_simulator=mock_llm_response,
+    )
+
+    for res in chain_results:
+        print(f"\n--- Chain Step {res['step_index']}: [{res['template_name']}] ---")
+        print("Rendered Prompt:")
+        print(res["rendered_prompt"])
+        print("\nSimulated LLM Output stored in state under key:", res["output_key"])
+        print(f" -> {res['simulated_output']}")
+
+    print("\nFinal Accumulative State across Chain:")
+    for k, v in chain_results[-1]["state_after_step"].items():
+        if len(str(v)) > 80:
+            print(f"  - {k}: {str(v)[:77]}...")
+        else:
+            print(f"  - {k}: {v}")
+
+    print_section("DEMONSTRATION COMPLETED SUCCESSFULLY!")
+
+
+if __name__ == "__main__":
+    main()
