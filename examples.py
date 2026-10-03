@@ -130,4 +130,29 @@ def main():
     # Step 1: Summarize input text -> store output as 'step_1_summary'
     # Step 2: Role-based review or Translate summary -> use 'step_1_summary' as input text!
 
-    chain = PromptChain(engine=engine, loader=l
+    chain = PromptChain(engine=engine, loader=loader)
+
+    # Mock simulator for LLM steps
+    def mock_llm_response(prompt: str) -> str:
+        if "summarize" in prompt.lower():
+            return "Pydantic and Jinja2 decouple prompt templates from Python code for safe, validated rendering."
+        elif "translate" in prompt.lower():
+            return "Pydantic y Jinja2 desacoplan las plantillas de prompts del codigo Python para un renderizado seguro y validado."
+        return "Simulated LLM Response"
+
+    chain_steps = [
+        ChainStep(
+            template="zero_shot_summarizer",
+            output_key="summary_output",
+        ),
+        ChainStep(
+            template="zero_shot_translator",
+            output_key="translated_summary",
+            input_mapping={"text": "summary_output"},
+        ),
+    ]
+
+    initial_inputs = {
+        "text_to_summarize": (
+            "Decoupling text prompts from hardcoded Python source code is a fundamental requirement "
+            "for production generative AI systems. By utilizin
