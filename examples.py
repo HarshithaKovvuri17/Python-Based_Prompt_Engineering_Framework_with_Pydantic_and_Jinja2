@@ -83,4 +83,51 @@ def main():
 
     # Pattern 4: Role-based
     print("\n--- Pattern 4: Role-based (role_python_expert.yaml) ---")
-  
+    role_tmpl = loader.get("role_python_expert")
+    code_to_review = (
+        "def render_prompt(template_str, vars):\n"
+        "    for k, v in vars.items():\n"
+        "        template_str = template_str.replace('{{' + k + '}}', str(v))\n"
+        "    return template_str"
+    )
+    rendered_role = engine.render(
+        role_tmpl,
+        primary_focus="Strict input validation, performance edge cases, and safety against partial substitution",
+        code_snippet=code_to_review,
+    )
+    print("Rendered Output:")
+    print(rendered_role)
+
+    # Pattern 5: Structured Output
+    print("\n--- Pattern 5: Structured Output (structured_json_extractor.yaml) ---")
+    structured_tmpl = loader.get("structured_json_extractor")
+    rendered_structured = engine.render(
+        structured_tmpl,
+        unstructured_text=(
+            "Patient John Doe (ID: 98412) was admitted on 2026-09-25 with severe acute migraine. "
+            "Attending physician: Dr. Aris Thorne."
+        ),
+        required_fields=["patient_name", "patient_id", "admission_date", "diagnosis", "doctor_name"],
+    )
+    print("Rendered Output:")
+    print(rendered_structured)
+
+    print_section("3. DEMONSTRATING STRICT VARIABLE VALIDATION (ERROR HANDLING)")
+    print("Attempting to render 'zero_shot_summarizer' without providing 'max_words':")
+    try:
+        engine.render(
+            summarizer_tmpl,
+            text_to_summarize="This text is missing the max_words input argument.",
+            # max_words is intentionally omitted!
+        )
+    except MissingVariableError as e:
+        print(f"\n[SUCCESS] Custom MissingVariableError caught gracefully!")
+        print(f"Error Message: {e}")
+
+    print_section("4. DEMONSTRATING SEQUENTIAL PROMPT CHAINING")
+
+    # We will build a 2-step chain:
+    # Step 1: Summarize input text -> store output as 'step_1_summary'
+    # Step 2: Role-based review or Translate summary -> use 'step_1_summary' as input text!
+
+    chain = PromptChain(engine=engine, loader=l
